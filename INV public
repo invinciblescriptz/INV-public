@@ -119,7 +119,7 @@ btn.MouseButton1Click:Connect(function()
         
         task.wait(0.6)
         
-        local url = "https://raw.githubusercontent.com/invinciblescriptz/INV-clan-script/refs/heads/main/INV.lua.txt"
+        local url = "https://github.com/invinciblescriptz/INV-clan-script/blob/main/INV.lua.txt"
         
         local success, errOrResult = pcall(function()
             local code = game:HttpGet(url, true)
