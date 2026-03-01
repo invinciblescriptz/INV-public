@@ -1,0 +1,174 @@
+-- Create ScreenGui
+local screenGui = Instance.new("ScreenGui")
+screenGui.Name = "INVKeySystemGUI"
+screenGui.ResetOnSpawn = false
+screenGui.Parent = game:GetService("CoreGui") -- CoreGui works more reliably for key systems
+
+-- Main frame
+local mainFrame = Instance.new("Frame")
+mainFrame.Size = UDim2.new(0, 420, 0, 320)
+mainFrame.Position = UDim2.new(0.5, -210, 0.5, -160)
+mainFrame.AnchorPoint = Vector2.new(0.5, 0.5)
+mainFrame.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+mainFrame.BorderSizePixel = 0
+mainFrame.Parent = screenGui
+
+-- Shadow / 3D effect
+local shadow = Instance.new("Frame")
+shadow.Size = UDim2.new(1, 12, 1, 12)
+shadow.Position = UDim2.new(0, -6, 0, -6)
+shadow.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+shadow.BackgroundTransparency = 0.6
+shadow.ZIndex = -1
+shadow.Parent = mainFrame
+
+-- Title
+local titleLabel = Instance.new("TextLabel")
+titleLabel.Size = UDim2.new(1, 0, 0, 50)
+titleLabel.Position = UDim2.new(0, 0, 0, 15)
+titleLabel.BackgroundTransparency = 1
+titleLabel.Text = "INV Key System"
+titleLabel.Font = Enum.Font.SourceSansBold
+titleLabel.TextSize = 28
+titleLabel.TextColor3 = Color3.new(1, 1, 1)
+titleLabel.TextXAlignment = Enum.TextXAlignment.Center
+titleLabel.Parent = mainFrame
+
+-- Subtitle
+local subtitleLabel = Instance.new("TextLabel")
+subtitleLabel.Size = UDim2.new(1, 0, 0, 30)
+subtitleLabel.Position = UDim2.new(0, 0, 0, 60)
+subtitleLabel.BackgroundTransparency = 1
+subtitleLabel.Text = "by invincible"
+subtitleLabel.Font = Enum.Font.SourceSans
+subtitleLabel.TextSize = 16
+subtitleLabel.TextColor3 = Color3.fromRGB(180, 180, 180)
+subtitleLabel.TextXAlignment = Enum.TextXAlignment.Center
+subtitleLabel.Parent = mainFrame
+
+-- Input box
+local inputBox = Instance.new("TextBox")
+inputBox.Size = UDim2.new(0, 280, 0, 40)
+inputBox.Position = UDim2.new(0.5, -140, 0, 110)
+inputBox.AnchorPoint = Vector2.new(0.5, 0)
+inputBox.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
+inputBox.BorderSizePixel = 0
+inputBox.TextColor3 = Color3.new(1,1,1)
+inputBox.PlaceholderText = "Enter Key Here..."
+inputBox.PlaceholderColor3 = Color3.fromRGB(140, 140, 140)
+inputBox.Text = ""
+inputBox.Font = Enum.Font.SourceSans
+inputBox.TextSize = 18
+inputBox.ClearTextOnFocus = false
+inputBox.Parent = mainFrame
+
+-- Submit button
+local submitButton = Instance.new("TextButton")
+submitButton.Size = UDim2.new(0, 280, 0, 50)
+submitButton.Position = UDim2.new(0.5, -140, 0, 170)
+submitButton.AnchorPoint = Vector2.new(0.5, 0)
+submitButton.BackgroundColor3 = Color3.fromRGB(0, 120, 215)
+submitButton.BorderSizePixel = 0
+submitButton.Font = Enum.Font.SourceSansBold
+submitButton.Text = "VERIFY"
+submitButton.TextColor3 = Color3.new(1,1,1)
+submitButton.TextSize = 20
+submitButton.Parent = mainFrame
+
+-- Status message label
+local statusLabel = Instance.new("TextLabel")
+statusLabel.Size = UDim2.new(1, -40, 0, 30)
+statusLabel.Position = UDim2.new(0, 20, 1, -50)
+statusLabel.BackgroundTransparency = 1
+statusLabel.Text = ""
+statusLabel.TextColor3 = Color3.fromRGB(255, 80, 80)
+statusLabel.Font = Enum.Font.SourceSans
+statusLabel.TextSize = 16
+statusLabel.TextXAlignment = Enum.TextXAlignment.Center
+statusLabel.Parent = mainFrame
+
+-- Tween service
+local TweenService = game:GetService("TweenService")
+local tweenInfo = TweenInfo.new(0.6, Enum.EasingStyle.Quint, Enum.EasingDirection.Out)
+
+local function tween(obj, props)
+    TweenService:Create(obj, tweenInfo, props):Play()
+end
+
+-- Simple hover effect for button
+submitButton.MouseEnter:Connect(function()
+    tween(submitButton, {BackgroundColor3 = Color3.fromRGB(0, 150, 255)})
+end)
+
+submitButton.MouseLeave:Connect(function()
+    tween(submitButton, {BackgroundColor3 = Color3.fromRGB(0, 120, 215)})
+end)
+
+-- The correct key (hardcoded)
+local CORRECT_KEY = "INVxONTOP"
+
+-- Main script URL
+local mainScriptUrl = "https://raw.githubusercontent.com/invinciblescriptz/INV-clan-script/refs/heads/main/INV.lua.txt"
+
+-- When button is clicked
+submitButton.MouseButton1Click:Connect(function()
+    local entered = inputBox.Text:gsub("%s+", "") -- remove all whitespace
+    
+    if entered == CORRECT_KEY then
+        -- Success
+        tween(submitButton, {BackgroundColor3 = Color3.fromRGB(0, 200, 80)})
+        tween(inputBox,   {BackgroundColor3 = Color3.fromRGB(40, 90, 40)})
+        statusLabel.TextColor3 = Color3.fromRGB(100, 255, 100)
+        statusLabel.Text = "Key accepted! Loading script..."
+        
+        submitButton.Text = "Loading..."
+        submitButton.Active = false
+        
+        task.wait(0.8)
+        
+        -- Load the real script
+        local success, result = pcall(function()
+            return loadstring(game:HttpGet(mainScriptUrl, true))()
+        end)
+        
+        if success then
+            statusLabel.Text = "Script loaded successfully!"
+            tween(statusLabel, {TextColor3 = Color3.fromRGB(120, 255, 120)})
+            task.wait(1.2)
+            screenGui:Destroy() -- optional: remove key gui after success
+        else
+            statusLabel.Text = "Failed to load main script"
+            statusLabel.TextColor3 = Color3.fromRGB(255, 100, 100)
+            warn("Loadstring failed: " .. tostring(result))
+            submitButton.Text = "Try Again"
+            submitButton.Active = true
+        end
+        
+    else
+        -- Wrong key
+        tween(inputBox, {BackgroundColor3 = Color3.fromRGB(100, 30, 30)})
+        tween(submitButton, {BackgroundColor3 = Color3.fromRGB(180, 40, 40)})
+        statusLabel.Text = "Invalid key. Try again."
+        statusLabel.TextColor3 = Color3.fromRGB(255, 90, 90)
+        
+        task.delay(1.8, function()
+            if statusLabel.Text == "Invalid key. Try again." then
+                tween(inputBox,   {BackgroundColor3 = Color3.fromRGB(45, 45, 45)})
+                tween(submitButton, {BackgroundColor3 = Color3.fromRGB(0, 120, 215)})
+                statusLabel.Text = ""
+            end
+        end)
+    end
+end)
+
+-- Optional: nice entrance animation
+mainFrame.BackgroundTransparency = 1
+mainFrame.Position = UDim2.new(0.5, -210, 0.5, -300)
+task.spawn(function()
+    task.wait(0.1)
+    tween(mainFrame, {
+        BackgroundTransparency = 0,
+        Position = UDim2.new(0.5, -210, 0.5, -160)
+    })
+end)
+print("INV Key System loaded — waiting for correct key: INVxONTOP")
