@@ -1,7 +1,8 @@
 -- Define the whitelist of Usernames
 local whitelistedUsers = {
     "hebdjxhc",
-    "krxzy_214", "alexglover020",
+    "krxzy_214",
+    "alexglover020",
 }
 
 local Players = game:GetService("Players")
@@ -23,7 +24,7 @@ end
 local library = loadstring(game:HttpGet("https://raw.githubusercontent.com/memejames/elerium-v2-ui-library/main/Library"))()
 
 local window = library:AddWindow("|| INV public ||  ", {
-    main_color = Color3.fromRGB(255, 0, 0), -- changed to red
+    main_color = Color3.fromRGB(255, 0, 0),
     min_size = Vector2.new(470, 470),
     can_resize = false,
     background_transparency = 1,
@@ -56,8 +57,6 @@ getgenv().selectedRockDurability = 0
 
 -- Placeholder for session start time
 local sessionStartTime = os.time()
-local timerRunning = false
-local startTime = os.time()
 
 -- UI placeholders for stats (replace with your actual UI elements)
 local TimerParagraph = { SetContent = function() end }
@@ -132,7 +131,8 @@ local function toggleInfiniteJump(state)
         jumpConn = UserInputService.JumpRequest:Connect(function()
             pcall(function()
                 local hum = LocalPlayer.Character and LocalPlayer.Character:FindFirstChildOfClass("Humanoid")
-                if hum then hum:ChangeState(Enum.HumanoidStateType.Jumping) end
+                if hum then hum:ChangeState(Enum.HumanoidStateType.Jumping)
+                end
             end)
         end)
     else
@@ -186,10 +186,12 @@ toolsFolder:AddSwitch("Auto Pushups", function(s)
     states.AutoPushups = s
     if s then startAutoRep("Pushups", "AutoPushups") end
 end)
+
 toolsFolder:AddSwitch("Auto Weight", function(s)
     states.AutoWeight = s
     if s then startAutoRep("Weight", "AutoWeight") end
 end)
+
 toolsFolder:AddSwitch("Auto Handstands", function(s)
     states.AutoHandstands = s
     if s then startAutoRep("Handstands", "AutoHandstands") end
@@ -410,7 +412,8 @@ local function updatePlayerStats()
 
     -- Session time
     local sessionTime = os.time() - sessionStartTime
-    -- Replace with your UI update code
+
+    -- Example UI update (replace with your UI code)
     -- TimerParagraph:SetContent(formatTime(sessionTime))
     -- if timerRunning then
     --     local elapsed = os.time() - startTime
@@ -539,7 +542,6 @@ local function formatTime(seconds)
     return string.format("%dd %dh %dm %ds", days, hours, minutes, secs)
 end
 
-local CreditsTab = window:AddTab (Credits)
-
+local CreditsTab = window:AddTab("Credits")
 CreditsTab:AddLabel("made by invincible")
 CreditsTab:AddLabel("https://discord.gg/c6MbJzuw")
