@@ -538,3 +538,6 @@ local function formatTime(seconds)
     local secs = seconds % 60
     return string.format("%dd %dh %dm %ds", days, hours, minutes, secs)
 end
+
+CreditsTab:AddLabel("made by invincible")
+CreditsTab:AddLabel("https://discord.gg/c6MbJzuw")
