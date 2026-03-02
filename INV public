@@ -539,5 +539,7 @@ local function formatTime(seconds)
     return string.format("%dd %dh %dm %ds", days, hours, minutes, secs)
 end
 
+local CreditsTab = window:AddTab (Credits)
+
 CreditsTab:AddLabel("made by invincible")
 CreditsTab:AddLabel("https://discord.gg/c6MbJzuw")
