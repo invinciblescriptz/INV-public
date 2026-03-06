@@ -571,7 +571,19 @@ setUIDarkRed(MainWindow)
 -- Fix credits label colors
 fixCredits()
 
--- Add static labels
-CreditsTab:AddLabel("Made by Invincible")
-CreditsTab:AddLabel("https://discord.gg/c6MbJzuw")
-CreditsTab:AddLabel("https://discord.gg/bPzzAxPR")
+local function setLabelColor(label, color)
+    if label then
+        label.TextColor3 = color
+    end
+end
+
+local labels = {
+    "Made by Invincible",
+    "https://discord.gg/c6MbJzuw",
+    "https://discord.gg/bPzzAxPR"
+}
+
+for _, text in ipairs(labels) do
+    local label = CreditsTab:AddLabel(text)
+    setLabelColor(label, Color3.new(1, 1, 1)) -- white color for visibility
+end
