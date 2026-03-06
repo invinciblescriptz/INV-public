@@ -47,7 +47,7 @@ getgenv().selectedRockDurability = 0
 
 local sessionStartTime = os.time()
 
--- Placeholder UI variables (Replace with your actual UI elements)
+-- Placeholder UI variables
 local TimerParagraph = { SetContent = function() end }
 local CustomTimerParagraph = { SetContent = function() end }
 local LeaderParagraph = { SetContent = function() end }
@@ -92,9 +92,10 @@ end
 local fastStrengthConn
 local function toggleFastStrength(state)
     states.FastStrength = state
+    local runService = game:GetService("RunService")
     if state then
         if fastStrengthConn then fastStrengthConn:Disconnect() end
-        fastStrengthConn = game:GetService("RunService").Heartbeat:Connect(function()
+        fastStrengthConn = runService.Heartbeat:Connect(function()
             pcall(function()
                 if muscleEvent then
                     muscleEvent:FireServer("rep")
@@ -104,7 +105,9 @@ local function toggleFastStrength(state)
                 local char = LocalPlayer.Character
                 if char then
                     local tool = char:FindFirstChildWhichIsA("Tool")
-                    if tool then tool:Activate() end
+                    if tool then
+                        tool:Activate()
+                    end
                 end
             end)
         end)
@@ -116,9 +119,10 @@ end
 local jumpConn
 local function toggleInfiniteJump(state)
     states.InfiniteJump = state
+    local UserInputService = game:GetService("UserInputService")
     if state then
         if jumpConn then return end
-        jumpConn = game:GetService("UserInputService").JumpRequest:Connect(function()
+        jumpConn = UserInputService.JumpRequest:Connect(function()
             pcall(function()
                 local hum = LocalPlayer.Character and LocalPlayer.Character:FindFirstChildOfClass("Humanoid")
                 if hum then hum:ChangeState(Enum.HumanoidStateType.Jumping) end
@@ -132,10 +136,9 @@ end
 local antiAfkConn
 local function toggleAntiAfk(state)
     states.AntiAfk = state
+    local VirtualUser = game:GetService("VirtualUser")
     if state then
         if antiAfkConn then return end
-        -- VirtualUser needs to be defined
-        local VirtualUser = game:GetService("VirtualUser")
         antiAfkConn = LocalPlayer.Idled:Connect(function()
             VirtualUser:CaptureController()
             VirtualUser:ClickButton2(Vector2.new())
@@ -172,8 +175,8 @@ local toolsFolder = mainTab:AddFolder("Tools")
 local rockFarmFolder = mainTab:AddFolder("Rock Farm")
 local killerFolder = killTab:AddFolder("Auto Kill")
 local brawlFarmingFolder = miscTab:AddFolder("Brawl Farming")
-local Miscv1Folder = miscTab:AddFolfer("Misc V1")
-local Miscv2Folder = miscTab:AddFolfer("Misc V2")
+local Miscv1Folder = miscTab:AddFolder("Misc V1")
+local Miscv2Folder = miscTab:AddFolder("Misc V2")
 
 -- Tools Switches
 toolsFolder:AddSwitch("Auto Pushups", function(s)
@@ -369,7 +372,6 @@ local function updatePlayerDropdown()
             table.insert(playerInfo, plr.Name .. " | " .. (plr.DisplayName or plr.Name))
         end
     end
-    -- Assuming dropdown supports SetOptions or similar method
     local dropdown = killerFolder:GetChildren()[1]
     if dropdown and dropdown.SetOptions then
         dropdown:SetOptions(playerInfo)
@@ -545,9 +547,19 @@ end
 
 local function setUIDarkRed(uiElement)
     if not uiElement then return end
-    if uiElement.SetColor then
-        uiElement:SetColor(Color3.fromRGB(139, 0, 0))
+    -- Set common color properties
+    if uiElement.BackgroundColor3 then
+        uiElement.BackgroundColor3 = Color3.fromRGB(139, 0, 0)
     end
+    if uiElement.TextColor3 then
+        uiElement.TextColor3 = Color3.fromRGB(139, 0, 0)
+    end
+    if uiElement.SetColor then
+        pcall(function()
+            uiElement:SetColor(Color3.fromRGB(139, 0, 0))
+        end)
+    end
+    -- Recursively apply to children
     for _, child in pairs(uiElement:GetChildren()) do
         setUIDarkRed(child)
     end
@@ -559,6 +571,7 @@ setUIDarkRed(MainWindow)
 -- Fix credits label colors
 fixCredits()
 
+-- Add static labels
 CreditsTab:AddLabel("Made by Invincible")
 CreditsTab:AddLabel("https://discord.gg/c6MbJzuw")
 CreditsTab:AddLabel("https://discord.gg/bPzzAxPR")
