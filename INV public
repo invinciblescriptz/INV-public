@@ -4,7 +4,7 @@ local successLibrary, library = pcall(function()
 end)
 
 local successScriptLib, ScriptLibrary = pcall(function()
-    return loadstring(game:HttpGet("https://raw.githubusercontent.com/p4020854-hub/Lb/refs/heads/main/X", true))()
+    return loadstring(game:HttpGet("https://raw.githubusercontent.com/p4020854-hub/Lb/refs/heads/main/X"))()
 end)
 
 if not successLibrary or not successScriptLib then
@@ -13,7 +13,7 @@ if not successLibrary or not successScriptLib then
 end
 
 -- Create main window
-local mainWindowTitle = string.format("INV Hub ||©️|| Made By invincible )
+local mainWindowTitle = "INV Hub ||©️|| Made By invincible"
 local MainWindow = ScriptLibrary:AddWindow(mainWindowTitle, {
     ["min_size"] = Vector2.new(520, 660),
     ["can_resize"] = true,
@@ -74,7 +74,7 @@ local function startAutoRep(toolName, stateKey)
                 if tool and tool.Parent ~= char then
                     char.Humanoid:EquipTool(tool)
                 end
-                -- Assuming muscleEvent is defined somewhere globally
+                -- Assuming muscleEvent is defined globally
                 if muscleEvent then muscleEvent:FireServer("rep") end
             end)
             task.wait(0.08)
@@ -134,6 +134,8 @@ local function toggleAntiAfk(state)
     states.AntiAfk = state
     if state then
         if antiAfkConn then return end
+        -- VirtualUser needs to be defined
+        local VirtualUser = game:GetService("VirtualUser")
         antiAfkConn = LocalPlayer.Idled:Connect(function()
             VirtualUser:CaptureController()
             VirtualUser:ClickButton2(Vector2.new())
@@ -170,6 +172,8 @@ local toolsFolder = mainTab:AddFolder("Tools")
 local rockFarmFolder = mainTab:AddFolder("Rock Farm")
 local killerFolder = killTab:AddFolder("Auto Kill")
 local brawlFarmingFolder = miscTab:AddFolder("Brawl Farming")
+local Miscv1Folder = miscTab:AddFolfer("Misc V1")
+local Miscv2Folder = miscTab:AddFolfer("Misc V2")
 
 -- Tools Switches
 toolsFolder:AddSwitch("Auto Pushups", function(s)
