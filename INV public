@@ -12,12 +12,12 @@ if not successLibrary or not successScriptLib then
     return
 end
 
--- Create main window with darker blood red background
-local mainWindowTitle = string.format("INV Hub || Hello %s", LocalPlayer and LocalPlayer.DisplayName or "Player")
+-- Create main window
+local mainWindowTitle = string.format("INV Hub ||©️|| Made By invincible )
 local MainWindow = ScriptLibrary:AddWindow(mainWindowTitle, {
     ["min_size"] = Vector2.new(520, 660),
     ["can_resize"] = true,
-    ["main_color"] = Color3.fromRGB(100, 0, 0) -- Darker Blood Red
+    ["main_color"] = Color3.fromRGB(139, 0, 0) -- Blood Red
 })
 
 -- Globals & states
@@ -554,3 +554,7 @@ setUIDarkRed(MainWindow)
 
 -- Fix credits label colors
 fixCredits()
+
+CreditsTab:AddLabel("Made by Invincible")
+CreditsTab:AddLabel("https://discord.gg/c6MbJzuw")
+CreditsTab:AddLabel("https://discord.gg/bPzzAxPR")
