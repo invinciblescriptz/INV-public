@@ -11,7 +11,25 @@ informationTab:AddLabel("Made by invincible").TextSize = 9
 informationTab:AddLabel("Im a dumbass dm 999krxzy on discord if you find any issues").TextSize = 5
 
 local mainTab = window:AddTab("Main")
-local Tools = mainTab -- Assuming Tools is the main tab or create accordingly
+local Tools = mainTab -- Using mainTab as Tools container
+
+-- Helper functions (define minimal stubs if not existing)
+local function startAutoRep(name, globalVar)
+    print("Start auto rep:", name)
+    -- Your implementation here
+end
+
+local function safeEquipTool(toolName)
+    print("Equip tool:", toolName)
+    -- Your implementation here
+end
+
+-- Assuming muscleEvent is a RemoteEvent, define dummy if not existing
+if not muscleEvent then
+    muscleEvent = Instance.new("RemoteEvent")
+    muscleEvent.Name = "muscleEvent"
+    -- Add to ReplicatedStorage if needed
+end
 
 -- Adding switches
 Tools:AddSwitch("Auto Pushups", function(state)
@@ -71,7 +89,7 @@ end)
 
 informationTab:AddButton("Free AutoLift Gamepass", function()
     pcall(function()
-        local gpFolder = ReplicatedStorage:FindFirstChild("gamepassIds")
+        local gpFolder = game:GetService("ReplicatedStorage"):FindFirstChild("gamepassIds")
         if gpFolder then
             local owned = LocalPlayer:FindFirstChild("ownedGamepasses") or Instance.new("Folder", LocalPlayer)
             owned.Name = "ownedGamepasses"
@@ -95,10 +113,12 @@ local function setRockFarm(durability, enable)
     if enable then
         getgenv().selectedRockDurability = durability
         getgenv().rockFarmActive = true
+        print("Rock Farm enabled for durability:", durability)
     else
         if getgenv().selectedRockDurability == durability then
             getgenv().rockFarmActive = false
             getgenv().selectedRockDurability = 0
+            print("Rock Farm disabled for durability:", durability)
         end
     end
 end
@@ -123,29 +143,40 @@ end
 rockFarmFolder:AddButton("Stop All Rock Farming", function()
     getgenv().rockFarmActive = false
     getgenv().selectedRockDurability = 0
+    print("All rock farming stopped.")
 end)
 
--- Rock Farming Loop
+-- Now, the main loop for rock farming
 task.spawn(function()
-    while getgenv().NexusRunning do
+    while true do
+        if not getgenv().NexusRunning then
+            task.wait(1)
+            continue
+        end
         if not getgenv().rockFarmActive or getgenv().selectedRockDurability <= 0 then
             task.wait(0.8)
             continue
         end
+        
         pcall(function()
             local char = LocalPlayer.Character
             if not char or not char:FindFirstChild("Humanoid") or char.Humanoid.Health <= 0 then
                 task.wait(1.4)
                 return
             end
+
             local dur = LocalPlayer:FindFirstChild("Durability")
             if not dur or dur.Value < getgenv().selectedRockDurability then
                 task.wait(0.6)
                 return
             end
-            -- Assuming safeEquipTool is defined elsewhere
-            safeEquipTool("Punch")
-            local machinesFolder = Workspace:FindFirstChild("machinesFolder")
+
+            -- Assuming safeEquipTool exists
+            if _G.safeEquipTool then
+                _G.safeEquipTool("Punch")
+            end
+
+            local machinesFolder = workspace:FindFirstChild("machinesFolder")
             if machinesFolder then
                 for _, obj in pairs(machinesFolder:GetDescendants()) do
                     if obj.Name == "neededDurability" and obj:IsA("IntValue") and obj.Value == getgenv().selectedRockDurability then
