@@ -11,7 +11,7 @@ informationTab:AddLabel("Made by invincible").TextSize = 9
 informationTab:AddLabel("Im a dumbass dm 999krxzy on discord if you find any issues").TextSize = 5
 
 local mainTab = window:AddTab("Main")
-local Tools = mainTab -- Assuming Tools is the main tab
+local Tools = mainTab -- Alias for main tab
 
 -- Placeholder for startAutoRep function
 local function startAutoRep(name, globalVar)
@@ -26,13 +26,12 @@ local function startAutoRep(name, globalVar)
     end)
 end
 
--- Placeholder for safeEquipTool
+-- Function to safely equip tools
 local function safeEquipTool(toolName)
     local character = LocalPlayer.Character
     if not character then return end
     local tool = character:FindFirstChild(toolName)
     if not tool then
-        -- Find in Backpack or other location
         local backpack = LocalPlayer.Backpack
         if backpack then
             local t = backpack:FindFirstChild(toolName)
@@ -43,18 +42,16 @@ local function safeEquipTool(toolName)
     end
 end
 
--- Initialize muscleEvent if needed
-local muscleEvent = game:GetService("ReplicatedStorage"):FindFirstChild("muscleEvent") or nil
+-- Initialize muscleEvent
+local muscleEvent = game:GetService("ReplicatedStorage"):FindFirstChild("muscleEvent")
 if not muscleEvent then
-    -- Create a dummy event for testing
     muscleEvent = Instance.new("RemoteEvent", game:GetService("ReplicatedStorage"))
     muscleEvent.Name = "muscleEvent"
 end
 
-local _G = _G
-_G.NexusRunning = true -- To control the main loop
+_G.NexusRunning = true -- Main loop control
 
--- Adding switches
+-- Switches for auto actions
 Tools:AddSwitch("Auto Pushups", function(state)
     _G.AutoPushups = state
     if state then startAutoRep("Pushups", "AutoPushups") end
@@ -91,8 +88,8 @@ Tools:AddSwitch("Fast Punch", function(state)
     end
 end)
 
+-- Rebirth Tab
 local rebirthTab = window:AddTab("Rebirth")
-
 rebirthTab:AddButton("Anti Lag (Boost FPS)", function()
     local Lighting = game:GetService("Lighting")
     Lighting.GlobalShadows = false
@@ -129,8 +126,8 @@ informationTab:AddButton("Free AutoLift Gamepass", function()
     end)
 end)
 
--- Initialize rockFarmFolder
-local rockFarmFolder = mainTab:AddFolder("Rock Farm")
+-- Rock Farm Folder
+local rockFarmFolder = window:AddFolder("Rock Farm")
 
 local function setRockFarm(durability, enable)
     if enable then
@@ -139,8 +136,8 @@ local function setRockFarm(durability, enable)
     else
         if getgenv().selectedRockDurability == durability then
             getgenv().rockFarmActive = false
-            getgenv().selectedRockDurability = 0
         end
+        getgenv().selectedRockDurability = 0
     end
 end
 
@@ -173,23 +170,26 @@ task.spawn(function()
             task.wait(0.8)
             continue
         end
+
         pcall(function()
             local char = LocalPlayer.Character
             if not char or not char:FindFirstChild("Humanoid") or char.Humanoid.Health <= 0 then
                 task.wait(1.4)
                 return
             end
+
             local dur = LocalPlayer:FindFirstChild("Durability")
             if not dur or dur.Value < getgenv().selectedRockDurability then
                 task.wait(0.6)
                 return
             end
+
             -- Equip Punch Tool
             safeEquipTool("Punch")
             local machinesFolder = workspace:FindFirstChild("machinesFolder")
             if machinesFolder then
                 for _, obj in pairs(machinesFolder:GetDescendants()) do
-                    if obj.Name == "neededDurability" and obj:IsA("IntValue") and obj.Value == getgenv().selectedRockDurability then
+                    if obj:IsA("IntValue") and obj.Name == "neededDurability" and obj.Value == getgenv().selectedRockDurability then
                         local rock = obj.Parent:FindFirstChild("Rock")
                         if rock and rock:IsA("BasePart") then
                             local hrp = char:FindFirstChild("HumanoidRootPart")
